@@ -44,7 +44,7 @@ def read_dict_from_tsv(path_to_tsv):
     result = {}
     with open(path_to_tsv, "rt") as f:
         for line in f:
-            line_split = line.split()
+            line_split = line.split('\t')
             try:
                 assert len(line_split) == 2, "Malformed line: {}".format(line)
             except AssertionError:
