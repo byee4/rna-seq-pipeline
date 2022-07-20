@@ -42,7 +42,7 @@ RSEM_COMMAND = """rsem-calculate-expression --bam \
 --forward-prob {fwd_prob} \
 {paired_end} \
 {anno_bam} \
-rsem_index/rsem \
+{rsem_prefix} \
 {bam_root}_rsem"""
 
 
@@ -90,6 +90,7 @@ def main(args):
     bam_root = remove_bam_from_end_re.sub("", os.path.basename(args.anno_bam))
     with tarfile.open(args.rsem_index, "r:gz") as archive:
         archive.extractall(".", members=make_modified_TarInfo(archive, "rsem_index"))
+        rsem_prefix = os.path.splitext(glob.glob(os.path.join("rsem_index", "*.grp"))[0])[0]
     rsem_call = shlex.split(
         RSEM_COMMAND.format(
             rnd_seed=args.rnd_seed,
@@ -99,6 +100,7 @@ def main(args):
             paired_end=format_endedness(args.endedness),
             anno_bam=args.anno_bam,
             bam_root=bam_root,
+            rsem_prefix=prefix,
         )
     )
     logger.info("Running RSEM command %s", " ".join(rsem_call))
